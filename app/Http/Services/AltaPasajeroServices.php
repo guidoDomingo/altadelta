@@ -32,16 +32,19 @@ class altaPasajeroServices
     function altaPasajeroServices($request)
     {
        $data = $request->all();
+       $tipo_doc = $data['tipo_documento'] ?? "";
+       $numero_documento = $data['numero_documento'] ?? "";
+
        $tipo_documento = (object) $this->obtenerTipoDocumentoServices($request);
        $paises = (object) $this->obtenerPaisesServices($request);
-       $usuario = (object) $this->consultaPasajeroServices(new Request(array("tipo_documento" => $data['tipo_documento'], "numero_documento" => $data['numero_documento'] )));
+       $usuario = (object) $this->consultaPasajeroServices(new Request(array("tipo_documento" => $tipo_doc, "numero_documento" => $numero_documento )));
        $nombre = $usuario->data["Nombre"] ?? "";
        $apellido = $usuario->data["Apellido"] ?? "";
 
        return view("delta.alta")->with("tipo_documento",$tipo_documento->data)->with("paises",$paises->data)->with("nombre",$nombre)
                                 ->with("apellido",$apellido)
-                                ->with("tipo_doc", $data['tipo_documento'])
-                                ->with("numero_documento", $data['numero_documento']);
+                                ->with("tipo_doc", $tipo_documento)
+                                ->with("numero_documento", $numero_documento);
 
     }
 
