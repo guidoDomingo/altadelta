@@ -14,6 +14,11 @@ class AltaPasajeroController extends Controller
         $this->services = new AltaPasajeroServices();
     }
 
+    public function empresasDisponibles(Request $request)
+    {
+        return $this->services->empresasDisponiblesServices($request);
+    }
+
     function altaPasajero(Request $request)
     {
         return $this->services->altaPasajeroServices($request);

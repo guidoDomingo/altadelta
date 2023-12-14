@@ -20,3 +20,24 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('alta', [AltaPasajeroController::class, "altaPasajero"]);
+
+Route::get('pruebalaravel', function(){
+
+        $empresas = \DB::table('credenciales_empresas')->where('deleted_at','=',null)->where('api_prefix','=','delta')->get();
+            
+        foreach($empresas as $empresa){
+            
+            $objeto [] = [
+                "id_empresa" => $empresa->id,
+                "nombre_empresa" => $empresa->nombre,
+                "codigo_empresa" => $empresa->codigo,
+            ];
+        }
+
+        $respuesta['error'] = false;
+        $respuesta['message'] = "Empresas disponibles";
+        $respuesta['message_user'] = "Empresas disponibles";
+        $respuesta['data'] = $objeto;
+
+        return $respuesta;
+});

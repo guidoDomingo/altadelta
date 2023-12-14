@@ -5,6 +5,7 @@ namespace App\Http\Services;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use SoapClient;
 
@@ -20,18 +21,60 @@ class altaPasajeroServices
     function __construct()
     {
 
-        $this->agencia = "APP";
+    }
 
-        $this->usuario   = "gEstIoN";
+    public function empresasDisponiblesServices($request)
+    {
+        try{
 
-        $this->password = "aPpTioN";
+            $empresas_disponibles = \DB::table('credenciales_empresas')->where('deleted_at','=',null)->where('api_prefix','=','delta')->get();
 
-        $this->url = "http://servidordeltapy.dyndns.org/expresoparaguay/wsdelta.asmx?wsdl";
+            $empresas = [];
+
+            if ($request->isMethod('get')) {
+                
+                foreach($empresas_disponibles as $empresa){
+                    $empresas [] = [
+                        "id_empresa" => $empresa->id,
+                        "nombre_empresa" => $empresa->nombre,
+                        "codigo_empresa" => $empresa->codigo,
+                        "imagen_empresa" => $empresa->imagen,
+                        "url_empresa" => $empresa->url,
+                        "agencia_empresa" => $empresa->agencia,
+                        "usuario_empresa" => $empresa->usuario,
+                        "clave_empresa" => $empresa->clave,
+                    ];
+                }
+                
+            } 
+            
+
+            return view('delta.empresas')->with('empresas', $empresas);
+
+        }catch(Exception $e){
+
+            $respuesta['error'] = true;
+            $respuesta['message'] = $e->getMessage();
+            $respuesta['message_user'] = "Empresas no encontradas";
+            $respuesta['data'] = [];
+        }
+        
+        
     }
 
     function altaPasajeroServices($request)
     {
        $data = $request->all();
+
+       if ($request->isMethod('post')) {
+
+            // Almacenar las credenciales en la sesión
+            Session::put('url', $request->input('url'));
+            Session::put('agencia', $request->input('agencia'));
+            Session::put('usuario', $request->input('usuario'));
+            Session::put('clave', $request->input('clave'));
+       }
+
        $tipo_doc = $data['tipo_documento'] ?? "";
        $numero_documento = $data['numero_documento'] ?? "";
 
@@ -41,7 +84,9 @@ class altaPasajeroServices
        $nombre = $usuario->data["Nombre"] ?? "";
        $apellido = $usuario->data["Apellido"] ?? "";
 
-       return view("delta.alta")->with("tipo_documento",$tipo_documento->data)->with("paises",$paises->data)->with("nombre",$nombre)
+       return view("delta.alta")->with("tipo_documento",$tipo_documento->data)
+                                ->with("paises",$paises->data)
+                                ->with("nombre",$nombre)
                                 ->with("apellido",$apellido)
                                 ->with("tipo_doc", $tipo_documento)
                                 ->with("numero_documento", $numero_documento);
@@ -53,6 +98,11 @@ class altaPasajeroServices
         try {
 
             $data = $request->all();
+
+            $this->url = Session::get('url');
+            $this->agencia = Session::get('agencia');
+            $this->usuario = Session::get('usuario');
+            $this->password = Session::get('clave');
 
             $validator = Validator::make($data, [
                 "tipo_documento" => "required",
@@ -136,6 +186,11 @@ class altaPasajeroServices
 
             $data = $request->all();
 
+            $this->url = Session::get('url');
+            $this->agencia = Session::get('agencia');
+            $this->usuario = Session::get('usuario');
+            $this->password = Session::get('clave');
+
             $options = [
                 'trace' => 1,
                 'exceptions' => true,
@@ -187,6 +242,11 @@ class altaPasajeroServices
 
             $data = $request->all();
 
+            $this->url = Session::get('url');
+            $this->agencia = Session::get('agencia');
+            $this->usuario = Session::get('usuario');
+            $this->password = Session::get('clave');
+
             $options = [
                 'trace' => 1,
                 'exceptions' => true,
@@ -237,6 +297,12 @@ class altaPasajeroServices
         try {
 
             $data = $request->all();
+
+            $this->url = Session::get('url');
+            $this->agencia = Session::get('agencia');
+            $this->usuario = Session::get('usuario');
+            $this->password = Session::get('clave');
+
             $validator = Validator::make($data, [
                 "numero_documento" => "required",
                 "tipo_documento" => "required"
