@@ -25,13 +25,16 @@ class AppServiceProvider extends ServiceProvider
             Log::debug(['ENTRO_BOOT_APPSERVICEPROVIDER' => $this->app->environment()]);
             URL::forceScheme('https');
 
-            // Obtén el prefijo delta de la configuración o ajusta según sea necesario
+            // Obtener el dominio dinámicamente desde la solicitud HTTP
+            $dynamicDomain = request()->getHttpHost();
+
+            // Obtener el prefijo delta de la configuración o ajustar según sea necesario
             $deltaPrefix = config('app.delta_prefix', 'delta');
 
-            // Agrega el prefijo a la URL base
-            $baseUrl = config('app.url') . '/' . $deltaPrefix;
+            // Construir la URL base con el prefijo y el dominio dinámico
+            $baseUrl = "https://$dynamicDomain/$deltaPrefix";
 
-            // Forzar la URL base con el prefijo delta
+            // Forzar la URL base con el prefijo delta y el dominio dinámico
             URL::forceRootUrl($baseUrl);
         }
     }
