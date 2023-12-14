@@ -25,6 +25,8 @@ class altaPasajeroServices
 
     public function empresasDisponiblesServices($request)
     {
+        return "<h1>Hola mundo</h1>";
+        
         try{
 
             $empresas_disponibles = \DB::table('credenciales_empresas')->where('deleted_at','=',null)->where('api_prefix','=','delta')->get();
