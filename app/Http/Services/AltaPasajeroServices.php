@@ -30,7 +30,6 @@ class altaPasajeroServices
 
             $empresas_disponibles = \DB::table('credenciales_empresas')->where('deleted_at','=',null)->where('api_prefix','=','delta')->get();
 
-            return [$empresas_disponibles];
 
             $empresas = [];
 
