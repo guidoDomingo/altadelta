@@ -16,6 +16,7 @@
 
 @section('content')
     <section class="content">
+        <h2>Elegir empresa</h2>
         <div class="row">
             @foreach ($empresas as $empresa)
                 <div id="card_12" class="col-md-3 layout-spacing widget">

@@ -132,7 +132,6 @@
     
                         <div class="account-content">
                            
-                           <h2>Elegir empresa</h2>
                            @yield('content')
                             
                         </div>
