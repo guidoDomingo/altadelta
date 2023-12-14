@@ -60,6 +60,10 @@ class altaPasajeroServices
             $respuesta['message'] = $e->getMessage();
             $respuesta['message_user'] = "Empresas no encontradas";
             $respuesta['data'] = [];
+
+            \Log::debug(['EXCEPCION: ' => $respuesta]);
+
+            return $respuesta;
         }
         
         
