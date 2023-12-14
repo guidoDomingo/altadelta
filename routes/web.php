@@ -18,12 +18,8 @@ use Illuminate\Support\Facades\Route;
 //     return view('welcome');
 // });
 
+Route::get('/', [AltaPasajeroController::class, "empresasDisponibles"]);
 
-    Route::get('/', [AltaPasajeroController::class, "empresasDisponibles"]);
-    
-Route::prefix('delta')->group(function () {
+Route::match(['get', 'post'],'/altaPasajero', [AltaPasajeroController::class, "altaPasajero"])->name('altaPasajero');
 
-    Route::match(['get', 'post'],'/altaPasajero', [AltaPasajeroController::class, "altaPasajero"])->name('altaPasajero');
-
-    Route::post('/guardar', [AltaPasajeroController::class, "guardar"])->name('guardar');
-});
+Route::post('/guardar', [AltaPasajeroController::class, "guardar"])->name('guardar');
